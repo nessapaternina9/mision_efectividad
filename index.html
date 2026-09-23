@@ -1,0 +1,444 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Misión Efectividad</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <!-- PANTALLA DE BIENVENIDA -->
+    <main id="welcomeScreen" class="screen welcome-screen">
+
+        <div class="welcome-content">
+
+            <p class="eyebrow">✦ UNA MISIÓN PARA TI ✦</p>
+
+            <h1>
+                Misión<br>
+                <span>Efectividad</span>
+            </h1>
+
+            <p class="description">
+                Convierte tus hábitos en superpoderes
+                y descubre de qué eres capaz.
+            </p>
+
+            <button id="startButton" class="start-button">
+                🚀 Comenzar misión
+            </button>
+
+        </div>
+
+    </main>
+
+
+    <!-- PANTALLA DE IDENTIFICACIÓN -->
+<main id="playerScreen" class="screen player-screen hidden">
+
+    <div class="player-content">
+
+        <p class="eyebrow">✦ NUEVO JUGADOR ✦</p>
+
+        <h2>
+            ¿Quién está<br>
+            listo para la misión?
+        </h2>
+
+        <form id="playerForm">
+
+            <!-- NOMBRE -->
+            <div class="form-group">
+
+                <label for="playerName">
+                    Tu nombre
+                </label>
+
+                <input
+                    type="text"
+                    id="playerName"
+                    placeholder="Escribe tu nombre"
+                    required
+                >
+
+            </div>
+
+
+            <!-- GRUPO -->
+            <div class="form-group">
+
+                <label for="playerGroupInput">
+                    Tu grupo
+                </label>
+
+                <input
+                    type="text"
+                    id="playerGroupInput"
+                    placeholder="Escribe tu grupo"
+                    required
+                >
+
+            </div>
+
+
+            <!-- CONTINUAR -->
+            <button
+                type="submit"
+                class="start-button"
+            >
+                🚀 Continuar
+            </button>
+
+        </form>
+
+    </div>
+
+</main>
+
+
+    <script src="data/habits.js"></script>
+    <!-- PANTALLA DEL MAPA -->
+<main id="mapScreen" class="screen map-screen hidden">
+
+    <div class="map-container">
+
+        <header class="map-header">
+
+            <div>
+                <p class="eyebrow">✦ TU MISIÓN ✦</p>
+
+                <h2 id="playerWelcome">
+                    ¡Bienvenido!
+                </h2>
+            </div>
+
+            <div class="player-stats">
+
+                <span id="playerGroup">
+                    Grupo
+                </span>
+
+                <span id="playerXP">
+                    ⭐ 0 XP
+                </span>
+
+            </div>
+
+        </header>
+
+
+        <section class="progress-section">
+
+            <div class="progress-info">
+
+                <span>Progreso de la misión</span>
+
+                <span id="progressText">
+                    0%
+                </span>
+
+            </div>
+
+            <div class="progress-bar">
+
+                <div
+                    id="progressFill"
+                    class="progress-fill"
+                ></div>
+
+            </div>
+
+        </section>
+
+
+        <section class="habits-map">
+
+            <div class="map-title">
+
+                <h3>
+                    El camino de la efectividad
+                </h3>
+
+                <p>
+                    Completa cada misión para desbloquear la siguiente.
+                </p>
+
+            </div>
+
+                   <div id="habitsContainer" class="habits-container">
+                <!-- Los hábitos aparecerán aquí -->
+            </div>
+
+        </section>
+
+        <button id="bonusButton" class="start-button hidden">
+            🏆 Misión Bonus: Memorama
+        </button>
+
+        <button id="sopaButton" class="start-button hidden">
+            🔎 Misión Bonus: Sopa de letras
+        </button>
+
+        <button id="finalButton" class="final-button hidden">
+            🌟 Ver tu logro final
+        </button>
+
+        <button id="resetButton" class="secondary-button">
+            🔄 Reiniciar progreso
+        </button>
+
+    </div>
+
+</main>
+
+<!-- PANTALLA DE LA MISIÓN 1 -->
+<main id="habitScreen" class="screen habit-screen hidden">
+
+    <div class="habit-content">
+
+        <p class="eyebrow">✦ MISIÓN 1 ✦</p>
+
+        <h2 id="habitTitle">
+            Ser proactivo
+        </h2>
+
+        <p id="habitDescription" class="habit-intro">
+            Tu primera misión comienza aquí.
+            Aprenderás a reconocer qué está bajo tu control
+            y cómo puedes tomar la iniciativa frente a las situaciones de la vida.
+        </p>
+
+        <div class="mission-message">
+
+            <p>
+                💡 Recuerda:
+            </p>
+
+            <p>
+                Ser proactivo no significa controlar todo lo que ocurre.
+                Significa elegir cómo responder y asumir responsabilidad
+                sobre nuestras decisiones.
+            </p>
+
+        </div>
+
+        <button id="startHabitButton" class="start-button">
+            🚀 Comenzar misión
+        </button>
+
+        <button id="backToMapButton" class="secondary-button">
+            ← Volver al mapa
+        </button>
+
+    </div>
+
+</main>
+<!-- PANTALLA DEL CASO 1 -->
+<main id="caseScreen" class="screen case-screen hidden">
+
+    <div class="case-content">
+
+        <p class="eyebrow">✦ CASO 1 ✦</p>
+
+        <h2 id="caseTitle">
+            El trabajo grupal
+        </h2>
+
+        <div class="case-situation">
+
+            <p id="caseContext">
+                Tienes una entrega grupal en dos días.
+                Uno de tus compañeros todavía no ha enviado
+                la parte que le correspondía y el resto del equipo
+                está esperando para poder terminar.
+            </p>
+
+        </div>
+
+        <h3 id="caseQuestion">
+            ¿Qué harías?
+        </h3>
+
+        <div id="caseOptions" class="case-options">
+            <!-- Las opciones aparecerán aquí -->
+        </div>
+        <div id="caseFeedback" class="case-feedback hidden">
+
+    <h3 id="feedbackTitle">
+        Resultado
+    </h3>
+
+    <p id="feedbackText">
+    </p>
+
+    <p id="feedbackXP">
+    </p>
+
+    <button id="nextCaseButton" class="start-button">
+        ➡️ Continuar
+    </button>
+
+</div>
+
+        <button id="backToHabitButton" class="secondary-button">
+            ← Volver a la misión
+        </button>
+
+    </div>
+
+</main>
+
+<!-- PANTALLA DEL MEMORAMA -->
+<main id="memoramaScreen" class="screen memorama-screen hidden">
+
+    <div class="memorama-content">
+
+        <p class="eyebrow">✦ MISIÓN BONUS ✦</p>
+
+        <h2>
+            Memorama de los 7 Hábitos
+        </h2>
+
+        <p class="memorama-intro">
+            Encuentra las parejas entre cada hábito y su frase clave.
+        </p>
+
+        <div id="memoramaBoard" class="memorama-board">
+            <!-- Las cartas aparecerán aquí -->
+        </div>
+
+        <div id="memoramaComplete" class="memorama-complete hidden">
+
+            <h3>
+                🎉 ¡Completaste el memorama!
+            </h3>
+
+            <p id="memoramaXP">
+            </p>
+
+        </div>
+
+        <button id="backToMapFromMemoramaButton" class="secondary-button">
+            ← Volver al mapa
+        </button>
+
+    </div>
+
+</main>
+
+<!-- PANTALLA DE LA SOPA DE LETRAS -->
+<main id="sopaScreen" class="screen sopa-screen hidden">
+
+    <div class="sopa-content">
+
+        <p class="eyebrow">✦ MISIÓN BONUS ✦</p>
+
+        <h2>
+            Sopa de letras: Los 7 Hábitos
+        </h2>
+
+        <p class="sopa-intro">
+            Encuentra las 7 palabras. Haz clic en la primera letra
+            y luego en la última letra de cada palabra.
+        </p>
+
+        <div class="sopa-layout">
+
+            <div id="sopaGrid" class="sopa-grid">
+                <!-- La cuadrícula aparecerá aquí -->
+            </div>
+
+            <div class="sopa-words">
+
+                <h3>Palabras a encontrar</h3>
+
+                <ul id="sopaWordList">
+                    <!-- La lista aparecerá aquí -->
+                </ul>
+
+            </div>
+
+        </div>
+
+        <div id="sopaComplete" class="sopa-complete hidden">
+
+            <h3>🎉 ¡Encontraste todas las palabras!</h3>
+
+            <p id="sopaXP">
+            </p>
+
+        </div>
+
+        <button id="backToMapFromSopaButton" class="secondary-button">
+            ← Volver al mapa
+        </button>
+
+    </div>
+
+</main>
+
+<!-- PANTALLA FINAL -->
+<main id="finalScreen" class="screen final-screen hidden">
+
+    <div class="final-content">
+
+        <div class="mascot">
+
+            <div class="mascot-head">
+
+                <div class="mascot-eye left"></div>
+                <div class="mascot-eye right"></div>
+
+                <div class="mascot-mouth"></div>
+
+            </div>
+
+            <div class="mascot-body">
+
+                <div class="mascot-arm left"></div>
+                <div class="mascot-arm right"></div>
+
+            </div>
+
+        </div>
+
+        <p class="eyebrow">✦ MISIÓN CUMPLIDA ✦</p>
+
+        <h1 class="final-title">
+            ¡LO LOGRASTE!
+        </h1>
+
+        <p class="final-subtitle">
+            Ahora eres una persona<br>
+            <span>altamente efectiva</span>
+        </p>
+
+        <p class="final-summary" id="finalSummary">
+        </p>
+
+        <button id="backToMapFromFinalButton" class="secondary-button">
+            ← Volver al mapa
+        </button>
+
+    </div>
+
+</main>
+
+
+<script src="data/mission1.js"></script>
+<script src="data/mission2.js"></script>
+<script src="data/mission3.js"></script>
+<script src="data/mission4.js"></script>
+<script src="data/mission5.js"></script>
+<script src="data/mission6.js"></script>
+<script src="data/mission7.js"></script>
+<script src="data/memorama.js"></script>
+<script src="data/sopa.js"></script>
+<script src="app.js"></script>
+
+</body>
+</html>

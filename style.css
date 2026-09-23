@@ -1,0 +1,739 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: Arial, sans-serif;
+    min-height: 100vh;
+    background: #ffffff;
+}
+
+.welcome-screen {
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 30px;
+}
+
+.welcome-content {
+    max-width: 700px;
+    text-align: center;
+}
+
+.eyebrow {
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 3px;
+    margin-bottom: 25px;
+}
+
+h1 {
+    font-size: clamp(60px, 10vw, 110px);
+    line-height: 0.9;
+    font-weight: 900;
+    margin-bottom: 30px;
+}
+
+h1 span {
+    text-decoration: underline;
+    text-decoration-thickness: 8px;
+}
+
+.description {
+    max-width: 500px;
+    margin: 0 auto 40px;
+
+    font-size: 20px;
+    line-height: 1.5;
+}
+
+.start-button {
+    border: none;
+    padding: 18px 35px;
+
+    font-size: 18px;
+    font-weight: bold;
+
+    border-radius: 14px;
+
+    cursor: pointer;
+
+    transition: transform 0.2s ease;
+}
+
+.start-button:hover {
+    transform: translateY(-4px);
+}
+
+.start-button:active {
+    transform: translateY(0);
+}
+/* ============================= */
+/* PANTALLAS */
+/* ============================= */
+
+.screen {
+    min-height: 100vh;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 30px;
+}
+
+.hidden {
+    display: none;
+}
+
+
+/* ============================= */
+/* PANTALLA DE JUGADOR */
+/* ============================= */
+
+.player-content {
+    width: 100%;
+    max-width: 500px;
+}
+
+.player-content h2 {
+    font-size: 48px;
+    line-height: 1;
+    margin-bottom: 40px;
+}
+
+
+/* ============================= */
+/* FORMULARIO */
+/* ============================= */
+
+.form-group {
+    margin-bottom: 25px;
+}
+
+.form-group label {
+    display: block;
+
+    font-size: 16px;
+    font-weight: bold;
+
+    margin-bottom: 8px;
+}
+
+.form-group input,
+.form-group select {
+    width: 100%;
+
+    padding: 16px;
+
+    border: 2px solid #000000;
+    border-radius: 12px;
+
+    font-size: 16px;
+
+    background: #ffffff;
+}
+
+.form-group input:focus,
+.form-group select:focus {
+    outline: none;
+    transform: translateY(-2px);
+}
+
+.player-content .start-button {
+    width: 100%;
+}
+/* ============================= */
+/* MAPA DE MISIÓN */
+/* ============================= */
+
+.map-screen {
+    align-items: flex-start;
+}
+
+.map-container {
+    width: 100%;
+    max-width: 1100px;
+    margin: 0 auto;
+}
+
+
+/* HEADER */
+
+.map-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    gap: 30px;
+
+    margin-bottom: 40px;
+}
+
+.map-header h2 {
+    font-size: 48px;
+    line-height: 1;
+}
+
+.player-stats {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+
+    font-weight: bold;
+}
+
+
+/* PROGRESO */
+
+.progress-section {
+    margin-bottom: 50px;
+}
+
+.progress-info {
+    display: flex;
+    justify-content: space-between;
+
+    margin-bottom: 10px;
+
+    font-weight: bold;
+}
+
+.progress-bar {
+    width: 100%;
+    height: 18px;
+
+    border: 2px solid #000000;
+    border-radius: 20px;
+
+    overflow: hidden;
+}
+
+.progress-fill {
+    width: 0%;
+    height: 100%;
+
+    transition: width 0.5s ease;
+}
+
+
+/* TÍTULO DEL MAPA */
+
+.map-title {
+    margin-bottom: 35px;
+}
+
+.map-title h3 {
+    font-size: 32px;
+    margin-bottom: 8px;
+}
+
+.map-title p {
+    font-size: 17px;
+}
+
+
+/* TARJETAS */
+
+.habits-container {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+}
+
+.habit-card {
+    width: 100%;
+
+    padding: 30px;
+
+    border: 3px solid #000000;
+    border-radius: 20px;
+
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.habit-card.unlocked {
+    cursor: pointer;
+}
+
+.habit-card.unlocked:hover {
+    transform: translateY(-5px);
+    box-shadow: 8px 8px 0 #000000;
+}
+
+.habit-card.locked {
+    opacity: 0.45;
+}
+
+.habit-number {
+    font-size: 14px;
+    font-weight: bold;
+    letter-spacing: 2px;
+
+    margin-bottom: 10px;
+}
+
+.habit-title {
+    font-size: 28px;
+    margin-bottom: 10px;
+}
+
+.habit-description {
+    font-size: 16px;
+    line-height: 1.5;
+
+    max-width: 700px;
+}
+
+.habit-footer {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    margin-top: 25px;
+
+    font-weight: bold;
+}
+
+
+/* RESPONSIVE */
+
+@media (max-width: 700px) {
+
+    .map-header {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .player-stats {
+        align-items: flex-start;
+    }
+
+    .map-header h2 {
+        font-size: 36px;
+    }
+
+    .habit-title {
+        font-size: 24px;
+    }
+
+}
+
+/* ============================= */
+/* PANTALLA DE LA MISIÓN */
+/* ============================= */
+
+.habit-content {
+    width: 100%;
+    max-width: 750px;
+    text-align: center;
+}
+
+.habit-content h2 {
+    font-size: 56px;
+    margin-bottom: 25px;
+}
+
+.habit-intro {
+    font-size: 20px;
+    line-height: 1.6;
+    margin-bottom: 30px;
+}
+
+.mission-message {
+    border: 3px solid #000000;
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 30px;
+    text-align: left;
+}
+
+.mission-message p:first-child {
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.secondary-button {
+    display: block;
+    margin: 15px auto 0;
+    background: transparent;
+    border: none;
+    font-size: 16px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+/* ============================= */
+/* PANTALLA DEL CASO */
+/* ============================= */
+
+.case-content {
+    width: 100%;
+    max-width: 800px;
+}
+
+.case-content h2 {
+    font-size: 48px;
+    line-height: 1.1;
+    margin-bottom: 30px;
+}
+
+.case-situation {
+    border: 3px solid #000000;
+    border-radius: 20px;
+    padding: 30px;
+    margin-bottom: 35px;
+    font-size: 20px;
+    line-height: 1.6;
+}
+
+.case-content h3 {
+    font-size: 28px;
+    margin-bottom: 20px;
+}
+
+.case-options {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.case-option {
+    width: 100%;
+    padding: 20px;
+    border: 3px solid #000000;
+    border-radius: 15px;
+    background: #ffffff;
+    font-size: 17px;
+    font-weight: bold;
+    text-align: left;
+    cursor: pointer;
+    transition:
+        transform 0.2s ease,
+        box-shadow 0.2s ease;
+}
+
+.case-option:hover {
+    transform: translateX(5px);
+    box-shadow: 6px 6px 0 #000000;
+}
+.case-option:active {
+    transform: translateX(3px);
+    box-shadow: 3px 3px 0 #000000;
+}
+/* ============================= */
+/* MEMORAMA */
+/* ============================= */
+
+.memorama-content {
+    width: 100%;
+    max-width: 900px;
+    text-align: center;
+}
+
+.memorama-content h2 {
+    font-size: 42px;
+    margin-bottom: 15px;
+}
+
+.memorama-intro {
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+.memorama-board {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.memory-card {
+    min-height: 120px;
+    padding: 15px;
+
+    border: 3px solid #000000;
+    border-radius: 15px;
+    background: #ffffff;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+    cursor: pointer;
+
+    transition: transform 0.2s ease;
+}
+
+.memory-card:hover {
+    transform: translateY(-3px);
+}
+
+.memory-card.matched {
+    opacity: 0.5;
+    cursor: default;
+}
+
+.memorama-complete {
+    border: 3px solid #000000;
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 25px;
+}
+/* ============================= */
+/* SOPA DE LETRAS */
+/* ============================= */
+
+.sopa-content {
+    width: 100%;
+    max-width: 900px;
+    text-align: center;
+}
+
+.sopa-content h2 {
+    font-size: 42px;
+    margin-bottom: 15px;
+}
+
+.sopa-intro {
+    font-size: 18px;
+    margin-bottom: 30px;
+}
+
+.sopa-layout {
+    display: flex;
+    gap: 40px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 30px;
+}
+
+.sopa-grid {
+    display: grid;
+    grid-template-columns: repeat(12, 1fr);
+    gap: 3px;
+    max-width: 480px;
+}
+
+.sopa-cell {
+    aspect-ratio: 1;
+
+    border: 2px solid #000000;
+    border-radius: 4px;
+    background: #ffffff;
+
+    font-size: 13px;
+    font-weight: bold;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    cursor: pointer;
+}
+
+.sopa-cell.selected {
+    background: #ffe066;
+}
+
+.sopa-cell.found {
+    background: #000000;
+    color: #ffffff;
+}
+
+.sopa-words {
+    text-align: left;
+    min-width: 220px;
+}
+
+.sopa-words h3 {
+    margin-bottom: 12px;
+}
+
+.sopa-words ul {
+    list-style: none;
+}
+
+.sopa-words li {
+    padding: 8px 0;
+    font-weight: bold;
+}
+
+.sopa-words li.found {
+    text-decoration: line-through;
+    opacity: 0.4;
+}
+
+.sopa-complete {
+    border: 3px solid #000000;
+    border-radius: 20px;
+    padding: 25px;
+    margin-bottom: 25px;
+}
+/* ============================= */
+/* PANTALLA FINAL */
+/* ============================= */
+
+.final-screen {
+    background: #fff9e6;
+}
+
+.final-content {
+    max-width: 600px;
+    text-align: center;
+}
+
+.final-title {
+    font-size: clamp(50px, 9vw, 80px);
+    font-weight: 900;
+    line-height: 0.95;
+    margin: 20px 0 15px;
+}
+
+.final-subtitle {
+    font-size: 24px;
+    line-height: 1.4;
+    margin-bottom: 20px;
+}
+
+.final-subtitle span {
+    text-decoration: underline;
+    text-decoration-thickness: 6px;
+}
+
+.final-summary {
+    font-size: 18px;
+    font-weight: bold;
+    margin-bottom: 35px;
+}
+
+.final-button {
+    border: none;
+    padding: 18px 35px;
+    font-size: 18px;
+    font-weight: bold;
+    border-radius: 14px;
+    cursor: pointer;
+    background: #000000;
+    color: #ffffff;
+    transition: transform 0.2s ease;
+}
+
+.final-button:hover {
+    transform: translateY(-4px);
+}
+
+
+/* MASCOTA */
+
+.mascot {
+    width: 140px;
+    margin: 0 auto 10px;
+    animation: bounce 1.4s ease-in-out infinite;
+}
+
+.mascot-head {
+    position: relative;
+    width: 90px;
+    height: 90px;
+    margin: 0 auto;
+    background: #ffd93d;
+    border: 4px solid #000000;
+    border-radius: 50%;
+}
+
+.mascot-eye {
+    position: absolute;
+    top: 35px;
+    width: 10px;
+    height: 10px;
+    background: #000000;
+    border-radius: 50%;
+}
+
+.mascot-eye.left {
+    left: 24px;
+}
+
+.mascot-eye.right {
+    right: 24px;
+}
+
+.mascot-mouth {
+    position: absolute;
+    bottom: 22px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 34px;
+    height: 17px;
+    border-bottom: 4px solid #000000;
+    border-radius: 0 0 20px 20px;
+}
+
+.mascot-body {
+    position: relative;
+    width: 70px;
+    height: 55px;
+    margin: -6px auto 0;
+    background: #ffd93d;
+    border: 4px solid #000000;
+    border-radius: 20px;
+}
+
+.mascot-arm {
+    position: absolute;
+    top: 8px;
+    width: 30px;
+    height: 8px;
+    background: #ffd93d;
+    border: 4px solid #000000;
+    border-radius: 10px;
+}
+
+.mascot-arm.left {
+    left: -28px;
+    transform: rotate(20deg);
+    transform-origin: right center;
+    animation: wave 1s ease-in-out infinite;
+}
+
+.mascot-arm.right {
+    right: -28px;
+    transform: rotate(-20deg);
+}
+
+@keyframes bounce {
+
+    0%, 100% {
+        transform: translateY(0);
+    }
+
+    50% {
+        transform: translateY(-10px);
+    }
+
+}
+
+@keyframes wave {
+
+    0%, 100% {
+        transform: rotate(20deg);
+    }
+
+    50% {
+        transform: rotate(50deg);
+    }
+
+}
