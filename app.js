@@ -568,6 +568,7 @@ function sendProgress(mision, opcion, correcta, xp) {
         method: "POST",
         body: JSON.stringify({
             nombre: player.name,
+            grupo: player.group,
             mision: mision,
             opcion: opcion,
             correcta: correcta,
