@@ -219,7 +219,7 @@ h1 span {
     width: 0%;
     height: 100%;
 
-    transition: width 0.5s ease;
+    transition: width 0.5s ease, background 0.5s ease;
 }
 
 
@@ -549,8 +549,8 @@ h1 span {
 }
 
 .sopa-cell.found {
-    background: #000000;
-    color: #ffffff;
+    color: #000000;
+    cursor: default;
 }
 
 .sopa-words {
@@ -567,8 +567,31 @@ h1 span {
 }
 
 .sopa-words li {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+
     padding: 8px 0;
     font-weight: bold;
+}
+
+.sopa-word-swatch {
+    width: 16px;
+    height: 16px;
+    min-width: 16px;
+
+    border: 2px solid #000000;
+    border-radius: 4px;
+}
+
+.sopa-word-text {
+    min-width: 90px;
+}
+
+.sopa-word-habit {
+    font-weight: normal;
+    font-size: 14px;
+    opacity: 0.8;
 }
 
 .sopa-words li.found {
@@ -736,4 +759,64 @@ h1 span {
         transform: rotate(50deg);
     }
 
+}
+/* ============================= */
+/* RESULTADOS */
+/* ============================= */
+
+.results-content {
+    width: 100%;
+    max-width: 600px;
+}
+
+.results-content h2 {
+    font-size: 42px;
+    margin-bottom: 20px;
+}
+
+.results-summary {
+    display: flex;
+    justify-content: space-between;
+
+    border: 3px solid #000000;
+    border-radius: 15px;
+    padding: 20px;
+
+    font-weight: bold;
+    font-size: 18px;
+
+    margin-bottom: 30px;
+}
+
+.results-section-title {
+    font-size: 20px;
+    margin-bottom: 12px;
+}
+
+.results-list {
+    list-style: none;
+    margin-bottom: 30px;
+}
+
+.results-list li {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    padding: 14px 16px;
+
+    border: 2px solid #000000;
+    border-radius: 12px;
+
+    margin-bottom: 10px;
+
+    font-weight: bold;
+}
+
+.results-list li.completed {
+    background: #d8f3dc;
+}
+
+.results-list li.pending {
+    opacity: 0.5;
 }

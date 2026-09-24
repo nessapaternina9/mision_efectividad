@@ -88,6 +88,24 @@ const finalSummary = document.getElementById("finalSummary");
 
 const backToMapFromFinalButton =
     document.getElementById("backToMapFromFinalButton");
+
+const progressFill = document.getElementById("progressFill");
+const progressText = document.getElementById("progressText");
+const resetButton = document.getElementById("resetButton");
+const resultsButton = document.getElementById("resultsButton");
+
+const resultsScreen = document.getElementById("resultsScreen");
+
+const resultsXPTotal = document.getElementById("resultsXPTotal");
+
+const resultsPercentage = document.getElementById("resultsPercentage");
+
+const resultsMissionsList = document.getElementById("resultsMissionsList");
+
+const resultsBonusList = document.getElementById("resultsBonusList");
+
+const backToMapFromResultsButton =
+    document.getElementById("backToMapFromResultsButton");
 // ============================================
 // DATOS DEL JUGADOR
 // ============================================
@@ -202,6 +220,8 @@ function showMap() {
     renderHabits();
 
     updateBonusButton();
+
+    updateProgress();
 
 }
 
@@ -358,6 +378,44 @@ function updateXP() {
 }
 
 // ============================================
+// ACTUALIZAR BARRA DE PROGRESO
+// ============================================
+
+function updateProgress() {
+
+    const totalHabits = habits.length;
+
+    const completedCount = player.completedHabits.length;
+
+    const percentage =
+        Math.round((completedCount / totalHabits) * 100);
+
+    progressFill.style.width = `${percentage}%`;
+
+    progressText.textContent = `${percentage}%`;
+
+
+    // ========================================
+    // COLOR SEGÚN EL PORCENTAJE
+    // ========================================
+
+    if (percentage <= 30) {
+
+        progressFill.style.background = "#e63946";
+
+    } else if (percentage <= 50) {
+
+        progressFill.style.background = "#f4a261";
+
+    } else {
+
+        progressFill.style.background = "#2a9d8f";
+
+    }
+
+}
+
+// ============================================
 // ABRIR MISIÓN
 // ============================================
 
@@ -452,37 +510,72 @@ function showCase(caseData) {
 
     caseFeedback.classList.add("hidden");
 
+// ========================================
+// MOSTRAR OPCIONES
+// ========================================
 
-    // ========================================
-    // MOSTRAR OPCIONES
-    // ========================================
+const caseOptions =
+    document.getElementById("caseOptions");
 
-    const caseOptions =
-        document.getElementById("caseOptions");
+caseOptions.innerHTML = "";
 
-    caseOptions.innerHTML = "";
+// Copiamos el array para no mutar el original
+const shuffledOptions = [...caseData.options];
 
+// Fisher-Yates shuffle
+for (let i = shuffledOptions.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffledOptions[i], shuffledOptions[j]] =
+        [shuffledOptions[j], shuffledOptions[i]];
+}
 
-    caseData.options.forEach(function (option) {
+// Reasignamos las letras (A, B, C, D...) según el nuevo orden
+const letters = ["A", "B", "C", "D", "E", "F"];
 
-        const optionButton =
-            document.createElement("button");
+shuffledOptions.forEach(function (option, index) {
+    option.displayLetter = letters[index];
+});
 
-        optionButton.classList.add("case-option");
+shuffledOptions.forEach(function (option) {
 
-        optionButton.textContent =
-            `${option.id}. ${option.text}`;
+    const optionButton =
+        document.createElement("button");
 
+    optionButton.classList.add("case-option");
 
-        optionButton.addEventListener("click", function () {
+    optionButton.textContent =
+        `${option.displayLetter}. ${option.text}`;
 
-            showFeedback(option);
+    optionButton.addEventListener("click", function () {
+        showFeedback(option);
+    });
 
-        });
+    caseOptions.appendChild(optionButton);
 
+});
 
-        caseOptions.appendChild(optionButton);
+}
 
+// ============================================
+// ENVIAR PROGRESO A GOOGLE SHEETS
+// ============================================
+
+function sendProgress(mision, opcion, correcta, xp) {
+
+    const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyMjF1KxOlXZ3nMDmPFWnQGK06yTgWUD7m3PeokfAbTolkKUdtwX6YWQDbZcdskHE0z/exec";
+
+    fetch(SCRIPT_URL, {
+        method: "POST",
+        body: JSON.stringify({
+            nombre: player.name,
+            mision: mision,
+            opcion: opcion,
+            correcta: correcta,
+            xp: xp
+        })
+    })
+    .catch(function (error) {
+        console.error("No se pudo guardar el progreso:", error);
     });
 
 }
@@ -516,6 +609,14 @@ function showFeedback(option) {
 
 
     caseFeedback.classList.remove("hidden");
+
+    // NUEVO: enviamos el progreso a Google Sheets
+    sendProgress(
+        currentMission.title,                 // nombre de la misión
+        option.displayLetter,                 // qué opción eligió
+        option.level === "proactive",         // true si fue la buena
+        option.xp                             // xp ganado
+    );
 
 }
 // ============================================
@@ -595,6 +696,8 @@ function completeMission() {
     checkAllComplete();
 
     saveProgress();
+
+    updateProgress();
 
 }
 
@@ -1063,21 +1166,7 @@ function renderSopa() {
 
             });
 
-            const isFound = sopaPlacedWords.some(function (placedWord) {
-
-                if (!sopaFoundWords.includes(placedWord.id)) {
-
-                    return false;
-
-                }
-
-                return placedWord.cells.some(function (cell) {
-
-                    return cell.row === row && cell.col === col;
-
-                });
-
-            });
+            const foundWord = getFoundWordForCell(row, col);
 
             if (isSelected) {
 
@@ -1085,9 +1174,12 @@ function renderSopa() {
 
             }
 
-            if (isFound) {
+            if (foundWord) {
 
                 cellButton.classList.add("found");
+
+                cellButton.style.backgroundColor =
+                    getWordColor(foundWord.id);
 
             }
 
@@ -1118,13 +1210,22 @@ function renderSopaWordList() {
 
         const listItem = document.createElement("li");
 
-        listItem.textContent = wordData.habit;
+        const isFound = sopaFoundWords.includes(wordData.id);
 
-        if (sopaFoundWords.includes(wordData.id)) {
+        if (isFound) {
 
             listItem.classList.add("found");
 
         }
+
+        listItem.innerHTML = `
+            <span
+                class="sopa-word-swatch"
+                style="background:${getWordColor(wordData.id)}"
+            ></span>
+            <span class="sopa-word-text">${wordData.word}</span>
+            <span class="sopa-word-habit">${wordData.habit}</span>
+        `;
 
         sopaWordList.appendChild(listItem);
 
@@ -1565,4 +1666,231 @@ if (hasProgress) {
 
     showMap();
 
+    updateFinalButton();
+
 }
+// ============================================
+// REINICIAR PROGRESO
+// ============================================
+
+resetButton.addEventListener("click", function () {
+
+    const confirmReset = confirm(
+        "¿Seguro que quieres borrar tu progreso? Esto no se puede deshacer."
+    );
+
+    if (confirmReset) {
+
+        localStorage.removeItem("misionEfectividadProgreso");
+
+        location.reload();
+
+    }
+
+});
+// ============================================
+// MOSTRAR RESULTADOS
+// ============================================
+
+function renderResults() {
+
+    // ----------------------------------------
+    // RESUMEN GENERAL
+    // ----------------------------------------
+
+    const totalHabits = habits.length;
+
+    const completedCount = player.completedHabits.length;
+
+    const percentage =
+        Math.round((completedCount / totalHabits) * 100);
+
+    resultsXPTotal.textContent = `⭐ ${player.xp} XP total`;
+
+    resultsPercentage.textContent = `${percentage}% completado`;
+
+
+// ============================================
+// OBTENER COLOR DE UNA PALABRA
+// ============================================
+
+function getWordColor(wordId) {
+
+    return sopaColors[wordId - 1];
+
+}
+
+// ============================================
+// SABER QUÉ PALABRA ENCONTRADA OCUPA UNA CELDA
+// ============================================
+
+function getFoundWordForCell(row, col) {
+
+    for (let i = 0; i < sopaFoundWords.length; i++) {
+
+        const wordId = sopaFoundWords[i];
+
+        const placedWord = sopaPlacedWords.find(function (word) {
+
+            return word.id === wordId;
+
+        });
+
+        if (!placedWord) {
+
+            continue;
+
+        }
+
+        const belongsHere = placedWord.cells.some(function (cell) {
+
+            return cell.row === row && cell.col === col;
+
+        });
+
+        if (belongsHere) {
+
+            return placedWord;
+
+        }
+
+    }
+
+    return null;
+
+}
+    // ----------------------------------------
+    // LISTA DE MISIONES
+    // ----------------------------------------
+
+    resultsMissionsList.innerHTML = "";
+
+    habits.forEach(function (habit) {
+
+        const isCompleted =
+            player.completedHabits.includes(habit.id);
+
+        const listItem = document.createElement("li");
+
+        listItem.classList.add(
+            isCompleted ? "completed" : "pending"
+        );
+
+        listItem.innerHTML = `
+            <span>${habit.title}</span>
+            <span>${isCompleted ? "✅ Completada" : "⏳ Pendiente"}</span>
+        `;
+
+        resultsMissionsList.appendChild(listItem);
+
+    });
+
+
+    // ----------------------------------------
+    // LISTA DE MISIONES BONUS
+    // ----------------------------------------
+
+    resultsBonusList.innerHTML = "";
+
+    const bonusActivities = [
+
+        { name: "Memorama de los 7 hábitos", done: memoramaCompleted },
+        { name: "Sopa de letras", done: sopaCompleted }
+
+    ];
+
+    bonusActivities.forEach(function (activity) {
+
+        const listItem = document.createElement("li");
+
+        listItem.classList.add(
+            activity.done ? "completed" : "pending"
+        );
+
+        listItem.innerHTML = `
+            <span>${activity.name}</span>
+            <span>${activity.done ? "✅ Completada" : "⏳ Pendiente"}</span>
+        `;
+
+        resultsBonusList.appendChild(listItem);
+
+    });
+
+}
+
+// ============================================
+// OBTENER COLOR DE UNA PALABRA
+// ============================================
+
+function getWordColor(wordId) {
+
+    return sopaColors[wordId - 1];
+
+}
+
+
+// ============================================
+// SABER QUÉ PALABRA ENCONTRADA OCUPA UNA CELDA
+// ============================================
+
+function getFoundWordForCell(row, col) {
+
+    for (let i = 0; i < sopaFoundWords.length; i++) {
+
+        const wordId = sopaFoundWords[i];
+
+        const placedWord = sopaPlacedWords.find(function (word) {
+
+            return word.id === wordId;
+
+        });
+
+        if (!placedWord) {
+
+            continue;
+
+        }
+
+        const belongsHere = placedWord.cells.some(function (cell) {
+
+            return cell.row === row && cell.col === col;
+
+        });
+
+        if (belongsHere) {
+
+            return placedWord;
+
+        }
+
+    }
+
+    return null;
+
+}
+// ============================================
+// ABRIR RESULTADOS
+// ============================================
+
+resultsButton.addEventListener("click", function () {
+
+    mapScreen.classList.add("hidden");
+
+    resultsScreen.classList.remove("hidden");
+
+    renderResults();
+
+});
+
+
+// ============================================
+// VOLVER AL MAPA DESDE RESULTADOS
+// ============================================
+
+backToMapFromResultsButton.addEventListener("click", function () {
+
+    resultsScreen.classList.add("hidden");
+
+    mapScreen.classList.remove("hidden");
+
+});

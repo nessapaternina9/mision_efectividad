@@ -234,6 +234,10 @@
             ← Volver al mapa
         </button>
 
+        <button id="resultsButton" class="secondary-button">
+            📋 Ver mis resultados
+        </button>
+
     </div>
 
 </main>
@@ -428,6 +432,48 @@
 
 </main>
 
+<!-- PANTALLA DE RESULTADOS -->
+<main id="resultsScreen" class="screen results-screen hidden">
+
+    <div class="results-content">
+
+        <p class="eyebrow">✦ TU PROGRESO ✦</p>
+
+        <h2>
+            Mis resultados
+        </h2>
+
+        <div class="results-summary">
+
+            <span id="resultsXPTotal"></span>
+
+            <span id="resultsPercentage"></span>
+
+        </div>
+
+        <h3 class="results-section-title">
+            Misiones
+        </h3>
+
+        <ul id="resultsMissionsList" class="results-list">
+            <!-- Se llena desde JS -->
+        </ul>
+
+        <h3 class="results-section-title">
+            Misiones bonus
+        </h3>
+
+        <ul id="resultsBonusList" class="results-list">
+            <!-- Se llena desde JS -->
+        </ul>
+
+        <button id="backToMapFromResultsButton" class="secondary-button">
+            ← Volver al mapa
+        </button>
+
+    </div>
+
+</main>
 
 <script src="data/mission1.js"></script>
 <script src="data/mission2.js"></script>

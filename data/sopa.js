@@ -15,3 +15,17 @@ const sopaWords = [
 ];
 
 const sopaGridSize = 12;
+
+// ============================================
+// COLORES PASTEL POR PALABRA
+// ============================================
+
+const sopaColors = [
+    "#ffadad", // 1 - Proactivo
+    "#ffd6a5", // 2 - Visión
+    "#fdffb6", // 3 - Prioridad
+    "#caffbf", // 4 - Cooperar
+    "#9bf6ff", // 5 - Escuchar
+    "#a0c4ff", // 6 - Sinergia
+    "#bdb2ff"  // 7 - Renovación
+];
