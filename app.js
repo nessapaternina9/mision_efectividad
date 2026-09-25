@@ -106,6 +106,8 @@ const resultsBonusList = document.getElementById("resultsBonusList");
 
 const backToMapFromResultsButton =
     document.getElementById("backToMapFromResultsButton");
+
+const loadingText = document.getElementById("loadingText");
 // ============================================
 // DATOS DEL JUGADOR
 // ============================================

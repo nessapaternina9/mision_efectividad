@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel del Profe — Misión Efectividad</title>
+</head>
+
+    <style>
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            padding: 30px;
+        }
+
+        h1 {
+            font-size: 32px;
+            margin-bottom: 20px;
+        }
+
+        /* PANTALLA DE CONTRASEÑA */
+
+        #passwordScreen {
+            max-width: 400px;
+            margin: 100px auto;
+            text-align: center;
+        }
+
+        #passwordInput {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #000000;
+            border-radius: 12px;
+            font-size: 16px;
+            margin: 15px 0;
+        }
+
+        #passwordButton {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            background: #000000;
+            color: #ffffff;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        #passwordError {
+            color: #e63946;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        /* DASHBOARD */
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 10px 8px;
+            border-bottom: 2px solid #eeeeee;
+        }
+
+        th {
+            font-size: 13px;
+            letter-spacing: 1px;
+            opacity: 0.6;
+        }
+
+        .badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-weight: bold;
+            font-size: 13px;
+        }
+
+        .badge-good {
+            background: #d8f3dc;
+        }
+
+        .badge-mid {
+            background: #fff3cd;
+        }
+
+        .badge-low {
+            background: #f8d7da;
+        }
+
+    </style>
+
+<body>
+
+    <!-- ============================= -->
+    <!-- PANTALLA DE CONTRASEÑA -->
+    <!-- ============================= -->
+
+    <main id="passwordScreen">
+
+        <h1>🔒 Panel del Profe</h1>
+
+        <input
+            type="password"
+            id="passwordInput"
+            placeholder="Ingresa la contraseña"
+        >
+
+        <button id="passwordButton">
+            Entrar
+        </button>
+
+        <p id="passwordError" style="display: none;">
+            Contraseña incorrecta, intenta de nuevo.
+        </p>
+
+    </main>
+
+
+    <!-- ============================= -->
+    <!-- DASHBOARD (empieza escondido) -->
+    <!-- ============================= -->
+
+        <main id="dashboardScreen" style="display: none;">
+
+        <h1>📊 Progreso de los estudiantes</h1>
+
+        <p id="loadingText">Cargando datos...</p>
+
+        <div id="groupsContainer"></div>
+
+    </main>
+
+
+    <script>
+
+        // ============================================
+        // CONFIGURACIÓN
+        // ============================================
+
+        const PASSWORD = "Mision2026";
+
+        const SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyMjF1KxOlXZ3nMDmPFWnQGK06yTgWUD7m3PeokfAbTolkKUdtwX6YWQDbZcdskHE0z/exec";
+
+
+        // ============================================
+        // ELEMENTOS DE LA PÁGINA
+        // ============================================
+
+        const passwordScreen = document.getElementById("passwordScreen");
+        const passwordInput = document.getElementById("passwordInput");
+        const passwordButton = document.getElementById("passwordButton");
+        const passwordError = document.getElementById("passwordError");
+
+        const dashboardScreen = document.getElementById("dashboardScreen");
+
+
+        // ============================================
+        // VERIFICAR CONTRASEÑA
+        // ============================================
+
+        function checkPassword() {
+
+            if (passwordInput.value === PASSWORD) {
+
+                passwordScreen.style.display = "none";
+                dashboardScreen.style.display = "block";
+
+                loadDashboard();
+
+            } else {
+
+                passwordError.style.display = "block";
+
+            }
+
+        }
+
+        passwordButton.addEventListener("click", checkPassword);
+
+        passwordInput.addEventListener("keyup", function (event) {
+
+            if (event.key === "Enter") {
+                checkPassword();
+            }
+
+        });
+
+
+        // ============================================
+        // CARGAR DATOS DESDE GOOGLE SHEETS
+        // ============================================
+
+                function loadDashboard() {
+
+            fetch(SCRIPT_URL)
+                .then(function (response) {
+                    return response.json();
+                })
+                .then(function (registros) {
+
+                    const grupos = agruparDatos(registros);
+
+                    console.log("Datos agrupados:", grupos);
+
+                    renderDashboard(grupos);
+
+                    loadingText.style.display = "none";
+
+                })
+                .catch(function (error) {
+
+                    console.error("Error cargando datos:", error);
+
+                });
+
+        }
+
+        
+        // ============================================
+        // ¿ESTA RESPUESTA FUE CORRECTA?
+        // (a veces Google Sheets guarda "true" como texto)
+        // ============================================
+
+        function esCorrecta(valor) {
+
+            return valor === true || valor === "TRUE" || valor === "true";
+
+        }
+
+
+        // ============================================
+        // AGRUPAR REGISTROS POR GRUPO Y POR ESTUDIANTE
+        // ============================================
+
+        function agruparDatos(registros) {
+
+            const grupos = {};
+
+            registros.forEach(function (registro) {
+
+                const nombreGrupo = registro.grupo || "Sin grupo";
+                const nombreEstudiante = registro.nombre || "Sin nombre";
+
+                // Si el grupo todavía no existe en nuestro objeto, lo creamos
+                if (!grupos[nombreGrupo]) {
+                    grupos[nombreGrupo] = {};
+                }
+
+                // Si el estudiante todavía no existe dentro de ese grupo, lo creamos
+                if (!grupos[nombreGrupo][nombreEstudiante]) {
+
+                    grupos[nombreGrupo][nombreEstudiante] = {
+                        respuestas: 0,
+                        correctas: 0,
+                        xpTotal: 0,
+                        misiones: new Set()
+                    };
+
+                }
+
+                // Ahora sumamos los datos de este registro a su estudiante
+                const estudiante = grupos[nombreGrupo][nombreEstudiante];
+
+                estudiante.respuestas++;
+
+                if (esCorrecta(registro.correcta)) {
+                    estudiante.correctas++;
+                }
+
+                estudiante.xpTotal += Number(registro.xp) || 0;
+
+                estudiante.misiones.add(registro.mision);
+
+            });
+
+            return grupos;
+
+        }
+
+        
+        // ============================================
+        // DECIDIR QUÉ COLOR USAR SEGÚN EL % DE ACIERTOS
+        // ============================================
+
+        function claseSegunPorcentaje(porcentaje) {
+
+            if (porcentaje >= 70) {
+                return "badge-good";
+            } else if (porcentaje >= 40) {
+                return "badge-mid";
+            } else {
+                return "badge-low";
+            }
+
+        }
+
+        
+        // ============================================
+        // DIBUJAR EL DASHBOARD EN PANTALLA
+        // ============================================
+
+        function renderDashboard(grupos) {
+
+            const groupsContainer = document.getElementById("groupsContainer");
+
+            groupsContainer.innerHTML = "";
+
+            // Recorremos cada grupo (ej: "Sin grupo", "Grupo2")
+            Object.keys(grupos).forEach(function (nombreGrupo) {
+
+                const estudiantes = grupos[nombreGrupo];
+
+                // Creamos un título para el grupo
+                const tituloGrupo = document.createElement("h2");
+                tituloGrupo.textContent = "Grupo: " + nombreGrupo;
+                groupsContainer.appendChild(tituloGrupo);
+
+                // Creamos la tabla para ese grupo
+                const table = document.createElement("table");
+                table.style.width = "100%";
+                table.style.marginBottom = "30px";
+
+                // Encabezados de la tabla
+                table.innerHTML = `
+                    <thead>
+                        <tr>
+                            <th>Estudiante</th>
+                            <th>Misiones tocadas</th>
+                            <th>Aciertos</th>
+                            <th>XP total</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                `;
+
+                const tbody = table.querySelector("tbody");
+
+                // Recorremos cada estudiante dentro de ese grupo
+                Object.keys(estudiantes).forEach(function (nombreEstudiante) {
+
+                    const datos = estudiantes[nombreEstudiante];
+
+                    const porcentaje =
+                        Math.round((datos.correctas / datos.respuestas) * 100);
+
+                    const fila = document.createElement("tr");
+
+                    fila.innerHTML = `
+                        <td>${nombreEstudiante}</td>
+                        <td>${datos.misiones.size}</td>
+                            <td>
+                            <span class="badge ${claseSegunPorcentaje(porcentaje)}">
+                                ${datos.correctas}/${datos.respuestas} (${porcentaje}%)
+                            </span>
+                        </td>
+                        <td>⭐ ${datos.xpTotal}</td>
+                    `;
+
+                    tbody.appendChild(fila);
+
+                });
+
+                groupsContainer.appendChild(table);
+
+            });
+
+        }
+
+    </script>
+
+</body>
+</html>
