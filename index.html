@@ -29,7 +29,7 @@
             </p>
 
             <button id="startButton" class="start-button">
-                🚀 Comenzar misión
+                🎓 Comenzar misión
             </button>
 
         </div>
@@ -90,7 +90,12 @@
                 type="submit"
                 class="start-button"
             >
-                🚀 Continuar
+                <svg class="academic-icon" viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/>
+                    <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/>
+                    <path d="m9 10 2 2 4-4"/>
+                </svg>
+                <span>Continuar</span>
             </button>
 
         </form>
@@ -155,40 +160,55 @@
         </section>
 
 
-        <section class="habits-map">
+        <section id="habitsContainer" class="habits-map">
 
             <div class="map-title">
-
-                <h3>
-                    El camino de la efectividad
-                </h3>
-
-                <p>
-                    Completa cada misión para desbloquear la siguiente.
-                </p>
-
+                <h3>El camino de la efectividad</h3>
+                <p>Completa cada misión para desbloquear la siguiente.</p>
             </div>
 
-                   <div id="habitsContainer" class="habits-container">
+            <div id="habitsContainer" class="habits-container">
                 <!-- Los hábitos aparecerán aquí -->
             </div>
 
         </section>
 
-        <button id="bonusButton" class="start-button hidden">
-            🏆 Misión Bonus: Memorama
-        </button>
+        <div class="map-quick-actions">
+            <button id="bonusButton" class="map-action map-action--memory hidden" type="button">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <rect x="4" y="4" width="7" height="7" rx="1.5"/>
+                    <rect x="13" y="4" width="7" height="7" rx="1.5"/>
+                    <rect x="4" y="13" width="7" height="7" rx="1.5"/>
+                    <path d="M16.5 13v7M13 16.5h7"/>
+                </svg>
+                <span>Memorama de los 7 hábitos</span>
+            </button>
 
-        <button id="sopaButton" class="start-button hidden">
-            🔎 Misión Bonus: Sopa de letras
-        </button>
+            <button id="sopaButton" class="map-action map-action--wordsearch hidden" type="button">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <circle cx="10.8" cy="10.8" r="6.8"/>
+                    <path d="m16 16 4.5 4.5M8 8h5M8 11h5M8 14h3"/>
+                </svg>
+                <span>Sopa de letras</span>
+            </button>
 
-        <button id="finalButton" class="final-button hidden">
-            🌟 Ver tu logro final
-        </button>
+            <button id="resetButton" class="map-action map-action--reset" type="button">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M20 7v5h-5"/>
+                    <path d="M19 12a7.5 7.5 0 0 0-13-5L4 9"/>
+                    <path d="M4 17v-5h5"/>
+                    <path d="M5 12a7.5 7.5 0 0 0 13 5l2-2"/>
+                </svg>
+                <span>Reiniciar progreso</span>
+            </button>
+        </div>
 
-        <button id="resetButton" class="secondary-button">
-            🔄 Reiniciar progreso
+        <button id="finalButton" class="map-action map-action--results final-button hidden" type="button">
+            <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path d="M8 4h8v5a4 4 0 0 1-8 0V4Z"/>
+                <path d="M8 6H5v2a4 4 0 0 0 4 4m7-6h3v2a4 4 0 0 1-4 4M12 13v5m-4 2h8"/>
+            </svg>
+            <span>Ver tu logro final</span>
         </button>
 
     </div>
@@ -243,57 +263,24 @@
 </main>
 <!-- PANTALLA DEL CASO 1 -->
 <main id="caseScreen" class="screen case-screen hidden">
-
     <div class="case-content">
+        <p id="caseMissionLabel" class="case-mission-label"></p>
+        <h2 id="caseTitle"></h2>
+        <p id="caseContext"></p>
+        <p id="caseQuestion"></p>
+        <div id="caseOptions"></div>
 
-        <p class="eyebrow">✦ CASO 1 ✦</p>
+        <section id="caseFeedback" class="hidden" aria-live="polite">
+            <h3 id="feedbackTitle"></h3>
+            <p id="feedbackText"></p>
+            <p id="feedbackXP"></p>
+        </section>
 
-        <h2 id="caseTitle">
-            El trabajo grupal
-        </h2>
-
-        <div class="case-situation">
-
-            <p id="caseContext">
-                Tienes una entrega grupal en dos días.
-                Uno de tus compañeros todavía no ha enviado
-                la parte que le correspondía y el resto del equipo
-                está esperando para poder terminar.
-            </p>
-
+        <div class="case-actions">
+            <button id="nextCaseButton" class="hidden" type="button">Continuar</button>
+            <button id="backToHabitButton" type="button">Volver al mapa</button>
         </div>
-
-        <h3 id="caseQuestion">
-            ¿Qué harías?
-        </h3>
-
-        <div id="caseOptions" class="case-options">
-            <!-- Las opciones aparecerán aquí -->
-        </div>
-        <div id="caseFeedback" class="case-feedback hidden">
-
-    <h3 id="feedbackTitle">
-        Resultado
-    </h3>
-
-    <p id="feedbackText">
-    </p>
-
-    <p id="feedbackXP">
-    </p>
-
-    <button id="nextCaseButton" class="start-button">
-        ➡️ Continuar
-    </button>
-
-</div>
-
-        <button id="backToHabitButton" class="secondary-button">
-            ← Volver a la misión
-        </button>
-
     </div>
-
 </main>
 
 <!-- PANTALLA DEL MEMORAMA -->
@@ -387,49 +374,63 @@
 
 <!-- PANTALLA FINAL -->
 <main id="finalScreen" class="screen final-screen hidden">
+    <div class="final-confetti" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i>
+        <i></i><i></i><i></i><i></i><i></i><i></i>
+        <i></i><i></i><i></i><i></i><i></i><i></i>
+        <i></i><i></i><i></i><i></i><i></i><i></i>
+    </div>
 
-    <div class="final-content">
-
-        <div class="mascot">
-
-            <div class="mascot-head">
-
-                <div class="mascot-eye left"></div>
-                <div class="mascot-eye right"></div>
-
-                <div class="mascot-mouth"></div>
-
-            </div>
-
-            <div class="mascot-body">
-
-                <div class="mascot-arm left"></div>
-                <div class="mascot-arm right"></div>
-
-            </div>
-
+    <section class="final-content">
+        <div class="final-trophy" aria-hidden="true">
+            <svg viewBox="0 0 240 230">
+                <defs>
+                    <linearGradient id="cupGold" x1="0" y1="0" x2="1" y2="1">
+                        <stop offset="0" stop-color="#fff27a"/>
+                        <stop offset=".48" stop-color="#ffbd24"/>
+                        <stop offset="1" stop-color="#f28a00"/>
+                    </linearGradient>
+                    <linearGradient id="cupBase" x1="0" y1="0" x2="0" y2="1">
+                        <stop stop-color="#7865ff"/>
+                        <stop offset="1" stop-color="#3929c8"/>
+                    </linearGradient>
+                </defs>
+                <path d="M75 35H165V91c0 43-18 67-45 67S75 134 75 91V35Z"
+                      fill="url(#cupGold)" stroke="#f49a00" stroke-width="6"/>
+                <path d="M75 53H43v24c0 28 17 44 45 44M165 53h32v24c0 28-17 44-45 44"
+                      fill="none" stroke="#ffad16" stroke-width="15" stroke-linecap="round"/>
+                <path d="M120 157v20m-29 13h58l-8 17H99l-8-17Zm-8 30h74"
+                      fill="url(#cupBase)" stroke="#4733cb" stroke-width="6" stroke-linejoin="round"/>
+                <path d="m120 61 9 18 20 3-14 14 3 20-18-10-18 10 3-20-14-14 20-3 9-18Z"
+                      fill="#fff2a2" stroke="#f49a00" stroke-width="4" stroke-linejoin="round"/>
+                <path d="M42 33 34 18m171 21 11-15M25 108 8 113m207-5 17 5"
+                      fill="none" stroke="#ffc52c" stroke-width="7" stroke-linecap="round"/>
+            </svg>
         </div>
 
-        <p class="eyebrow">✦ MISIÓN CUMPLIDA ✦</p>
-
-        <h1 class="final-title">
-            ¡LO LOGRASTE!
-        </h1>
+        <p class="final-eyebrow">✦ MISIÓN CUMPLIDA ✦</p>
+        <h1 class="final-title">¡LO LOGRASTE!</h1>
 
         <p class="final-subtitle">
             Ahora eres una persona<br>
-            <span>altamente efectiva</span>
+            <strong>altamente efectiva</strong>
         </p>
 
-        <p class="final-summary" id="finalSummary">
-        </p>
+        <div id="finalSummary" class="final-results-card">
+            <span class="final-star" aria-hidden="true">★</span>
+            <p>
+                <strong id="finalPlayerName"></strong>, completaste las 7 misiones y ganaste
+                <strong id="finalXP" class="final-xp"></strong>
+                en total.
+            </p>
+        </div>
 
-        <button id="backToMapFromFinalButton" class="secondary-button">
-            ← Volver al mapa
+        <button id="backToMapFromFinalButton" class="final-back-button" type="button">
+            <span aria-hidden="true">⌂</span>
+            <span>Volver al mapa</span>
+            <span class="final-arrow" aria-hidden="true">→</span>
         </button>
-
-    </div>
-
+    </section>
 </main>
 
 <!-- PANTALLA DE RESULTADOS -->

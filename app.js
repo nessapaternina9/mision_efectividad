@@ -108,6 +108,12 @@ const backToMapFromResultsButton =
     document.getElementById("backToMapFromResultsButton");
 
 const loadingText = document.getElementById("loadingText");
+const refreshButton = document.getElementById("refreshButton");
+
+if (refreshButton && typeof loadDashboard === "function") {
+    refreshButton.addEventListener("click", loadDashboard);
+}
+
 // ============================================
 // DATOS DEL JUGADOR
 // ============================================
@@ -126,6 +132,7 @@ const player = {
 
 let currentMission = null;
 let currentCaseIndex = 0;
+let currentHabitId = null;
 
 // ============================================
 // ESTADO DEL MEMORAMA
@@ -267,7 +274,7 @@ function checkAllComplete() {
             finalScreen.classList.remove("hidden");
 
             finalSummary.textContent =
-                `${player.name}, completaste las 7 misiones y ganaste ⭐ ${player.xp} XP en total.`;
+                `${player.name}, completaste las 7 misiones y ganaste ${player.xp} XP en total.`;
 
         }, 1500);
 
@@ -302,69 +309,90 @@ function updateBonusButton() {
 // ============================================
 
 function renderHabits() {
-
     habitsContainer.innerHTML = "";
 
+    const academicIcons = [
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2Z"/><path d="M8 7h8M8 11h5"/></svg>',
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1"/><path d="m14 10 6-6"/></svg>',
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3v18M3 12h18"/><path d="m8 8 8 8m0-8-8 8"/></svg>',
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3v18M5 6h14M7 6l-4 8h8L7 6Zm10 0-4 8h8l-4-8ZM8 21h8"/></svg>',
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/><path d="m18 4 2 2"/></svg>',
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="6" cy="6" r="2"/><circle cx="18" cy="6" r="2"/><circle cx="12" cy="18" r="2"/><path d="m8 7 8 0m-8 1 3 8m5-8-3 8"/></svg>',
+        '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 4c-8 0-14 3-14 10a6 6 0 0 0 6 6c7 0 10-8 8-16Z"/><path d="M4 21c3-5 7-8 12-11"/></svg>'
+    ];
+
     habits.forEach(function (habit) {
+        const isCompleted = player.completedHabits.includes(habit.id);
+        const isUnlocked = habit.unlocked;
 
-        const habitCard = document.createElement("article");
+        const station = document.createElement("article");
+        station.classList.add("habit-station");
+        station.classList.add(isUnlocked ? "unlocked" : "locked");
 
-        habitCard.classList.add("habit-card");
-
-        if (habit.unlocked) {
-
-            habitCard.classList.add("unlocked");
-
-        } else {
-
-            habitCard.classList.add("locked");
-
+        if (isCompleted) {
+            station.classList.add("completed");
         }
 
-        if (habit.unlocked) {
+        const icon = document.createElement("span");
+        icon.className = "station-icon";
+        icon.innerHTML = academicIcons[(habit.id - 1) % academicIcons.length];
 
-    habitCard.addEventListener("click", function () {
+        const details = document.createElement("div");
+        details.className = "station-details";
 
-        openHabit(habit);
+        const number = document.createElement("p");
+        number.className = "station-number";
+        number.textContent = `MISIÓN ${habit.id}`;
 
+        const title = document.createElement("h4");
+        title.className = "habit-title";
+        title.textContent = habit.title;
+
+        const description = document.createElement("p");
+        description.className = "habit-description";
+        description.textContent = habit.description;
+
+        const footer = document.createElement("div");
+        footer.className = "station-footer";
+
+        const xp = document.createElement("span");
+        xp.className = "station-xp";
+        xp.textContent = `${habit.xp} XP`;
+
+        const status = document.createElement("span");
+        status.className = "station-status";
+        status.textContent = isCompleted
+            ? "Completada"
+            : isUnlocked
+                ? "Disponible"
+                : "Bloqueada";
+
+        footer.append(xp, status);
+        details.append(number, title, description, footer);
+        station.append(icon, details);
+
+        if (isUnlocked) {
+            station.tabIndex = 0;
+            station.setAttribute("role", "button");
+            station.setAttribute(
+                "aria-label",
+                `Misión ${habit.id}: ${habit.title}. ${status.textContent}`
+            );
+
+            station.addEventListener("click", function () {
+                openHabit(habit);
+            });
+
+            station.addEventListener("keydown", function (event) {
+                if (event.key === "Enter" || event.key === " ") {
+                    event.preventDefault();
+                    openHabit(habit);
+                }
+            });
+        }
+
+        habitsContainer.appendChild(station);
     });
-
-}
-
-
-        habitCard.innerHTML = `
-
-            <div class="habit-number">
-                MISIÓN ${habit.id}
-            </div>
-
-            <h4 class="habit-title">
-                ${habit.title}
-            </h4>
-
-            <p class="habit-description">
-                ${habit.description}
-            </p>
-
-            <div class="habit-footer">
-
-                <span>
-                    ⭐ ${habit.xp} XP
-                </span>
-
-                <span>
-                    ${habit.unlocked ? "🔓 Disponible" : "🔒 Bloqueado"}
-                </span>
-
-            </div>
-
-        `;
-
-
-        habitsContainer.appendChild(habitCard);
-
-    });
-
 }
 
 
@@ -384,37 +412,26 @@ function updateXP() {
 // ============================================
 
 function updateProgress() {
-
     const totalHabits = habits.length;
+    const completedCount = habits.filter(function (habit) {
+        return player.completedHabits.includes(habit.id);
+    }).length;
 
-    const completedCount = player.completedHabits.length;
-
-    const percentage =
-        Math.round((completedCount / totalHabits) * 100);
+    const percentage = totalHabits
+        ? Math.min(100, Math.round((completedCount / totalHabits) * 100))
+        : 0;
 
     progressFill.style.width = `${percentage}%`;
-
+    progressFill.setAttribute("aria-valuenow", percentage);
     progressText.textContent = `${percentage}%`;
 
-
-    // ========================================
-    // COLOR SEGÚN EL PORCENTAJE
-    // ========================================
-
     if (percentage <= 30) {
-
         progressFill.style.background = "#e63946";
-
     } else if (percentage <= 50) {
-
         progressFill.style.background = "#f4a261";
-
     } else {
-
         progressFill.style.background = "#2a9d8f";
-
     }
-
 }
 
 // ============================================
@@ -422,142 +439,115 @@ function updateProgress() {
 // ============================================
 
 function openHabit(habit) {
+    currentMission = null;
 
-    mapScreen.classList.add("hidden");
-
-    habitScreen.classList.remove("hidden");
-
-
-    // ========================================
-    // IDENTIFICAR LOS DATOS DE LA MISIÓN
-    // ========================================
-
-      if (habit.id === 1) {
-
-        currentMission = mission1;
-
-    } else if (habit.id === 2) {
-
-        currentMission = mission2;
-
-    } else if (habit.id === 3) {
-
-        currentMission = mission3;
-
-    } else if (habit.id === 4) {
-
-        currentMission = mission4;
-
-    } else if (habit.id === 5) {
-
-        currentMission = mission5;
-
-    } else if (habit.id === 6) {
-
-        currentMission = mission6;
-
-    } else if (habit.id === 7) {
-
+    if (habit.id === 1) currentMission = mission1;
+    else if (habit.id === 2) currentMission = mission2;
+    else if (habit.id === 3) currentMission = mission3;
+    else if (habit.id === 4) currentMission = mission4;
+    else if (habit.id === 5) currentMission = mission5;
+    else if (habit.id === 6) currentMission = mission6;
+    else if (habit.id === 7 && typeof mission7 !== "undefined") {
         currentMission = mission7;
-
     }
-    // ========================================
-    // MOSTRAR INFORMACIÓN
-    // ========================================
 
-    document.getElementById("habitTitle").textContent =
-        currentMission.title;
-
-    document.getElementById("habitDescription").textContent =
-        currentMission.objective;
-
-}
-
-// ============================================
-// COMENZAR MISIÓN
-// ============================================
-
-startHabitButton.addEventListener("click", function () {
-
-    habitScreen.classList.add("hidden");
-
-    caseScreen.classList.remove("hidden");
+    if (!currentMission || !currentMission.cases?.length) {
+        console.error(`No se encontraron los casos de la misión ${habit.id}.`);
+        return;
+    }
 
     currentCaseIndex = 0;
+    mapScreen.classList.add("hidden");
+    habitScreen.classList.add("hidden");
+    caseScreen.classList.remove("hidden");
 
     showCase(currentMission.cases[currentCaseIndex]);
+}
 
-});
+// Se conserva por compatibilidad, pero la misión ya entra directamente al caso.
+if (startHabitButton) {
+    startHabitButton.addEventListener("click", function () {
+        if (!currentMission) return;
 
+        habitScreen.classList.add("hidden");
+        caseScreen.classList.remove("hidden");
+        currentCaseIndex = 0;
+        showCase(currentMission.cases[currentCaseIndex]);
+    });
+}
 
 // ============================================
 // MOSTRAR CASO
 // ============================================
 
 function showCase(caseData) {
+    if (!caseData) {
+        console.error("No se recibió información del caso.");
+        return;
+    }
 
-    document.getElementById("caseTitle").textContent =
-        caseData.title;
+    if (!caseTitle || !caseContext || !caseQuestion || !caseOptions) {
+        console.error(
+            "Faltan en index.html los elementos caseTitle, caseContext, caseQuestion o caseOptions."
+        );
+        return;
+    }
 
-    document.getElementById("caseContext").textContent =
-        caseData.context;
+    caseTitle.textContent = caseData.title || "Caso";
+    caseContext.textContent = caseData.context || "";
+    caseQuestion.textContent = caseData.question || "";
 
-    document.getElementById("caseQuestion").textContent =
-        caseData.question;
+    const missionLabel = document.getElementById("caseMissionLabel");
+    if (missionLabel) {
+        missionLabel.textContent =
+            `✦ MISIÓN ${currentMission.id} · CASO ${currentCaseIndex + 1} ✦`;
+    }
 
-
-    // ========================================
-    // PREPARAR FEEDBACK
-    // ========================================
-
+    caseOptions.replaceChildren();
     caseFeedback.classList.add("hidden");
+    nextCaseButton.classList.add("hidden");
 
-// ========================================
-// MOSTRAR OPCIONES
-// ========================================
+    if (!Array.isArray(caseData.options) || caseData.options.length === 0) {
+        console.error("No se encontraron opciones en este caso:", caseData);
+        return;
+    }
 
-const caseOptions =
-    document.getElementById("caseOptions");
+    const shuffledOptions = [...caseData.options];
 
-caseOptions.innerHTML = "";
+    for (let i = shuffledOptions.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffledOptions[i], shuffledOptions[j]] =
+            [shuffledOptions[j], shuffledOptions[i]];
+    }
 
-// Copiamos el array para no mutar el original
-const shuffledOptions = [...caseData.options];
+    shuffledOptions.forEach(function (option, index) {
+        const answer = typeof option === "string"
+            ? { text: option }
+            : option;
 
-// Fisher-Yates shuffle
-for (let i = shuffledOptions.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [shuffledOptions[i], shuffledOptions[j]] =
-        [shuffledOptions[j], shuffledOptions[i]];
-}
+        if (!answer || !answer.text) {
+            console.warn("Opción sin propiedad text:", answer);
+            return;
+        }
 
-// Reasignamos las letras (A, B, C, D...) según el nuevo orden
-const letters = ["A", "B", "C", "D", "E", "F"];
+        const letter = String.fromCharCode(65 + index);
+        const button = document.createElement("button");
 
-shuffledOptions.forEach(function (option, index) {
-    option.displayLetter = letters[index];
-});
+        button.type = "button";
+        button.className = "case-option";
+        button.textContent = `${letter}. ${answer.text}`;
 
-shuffledOptions.forEach(function (option) {
+        button.addEventListener("click", function () {
+            showFeedback({
+                ...answer,
+                displayLetter: letter,
+                xp: Number(answer.xp) || 0
+            });
+        });
 
-    const optionButton =
-        document.createElement("button");
-
-    optionButton.classList.add("case-option");
-
-    optionButton.textContent =
-        `${option.displayLetter}. ${option.text}`;
-
-    optionButton.addEventListener("click", function () {
-        showFeedback(option);
+        caseOptions.appendChild(button);
     });
-
-    caseOptions.appendChild(optionButton);
-
-});
-
 }
-
 // ============================================
 // ENVIAR PROGRESO A GOOGLE SHEETS
 // ============================================
@@ -589,6 +579,11 @@ function sendProgress(mision, opcion, correcta, xp) {
 // ============================================
 
 function showFeedback(option) {
+    if (!caseFeedback.classList.contains("hidden")) return;
+
+    document.querySelectorAll("#caseOptions .case-option").forEach(function (button) {
+        button.disabled = true;
+    });
 
     feedbackTitle.textContent =
         option.level === "proactive"
@@ -612,6 +607,11 @@ function showFeedback(option) {
 
 
     caseFeedback.classList.remove("hidden");
+    nextCaseButton.textContent =
+        currentCaseIndex < currentMission.cases.length - 1
+            ? "Siguiente caso"
+            : "Finalizar misión";
+    nextCaseButton.classList.remove("hidden");
 
     // NUEVO: enviamos el progreso a Google Sheets
     sendProgress(
@@ -655,8 +655,7 @@ let sopaCompleted = false;
 backToHabitButton.addEventListener("click", function () {
 
     caseScreen.classList.add("hidden");
-
-    habitScreen.classList.remove("hidden");
+    mapScreen.classList.remove("hidden");
 
 });
 
@@ -677,8 +676,16 @@ backToMapButton.addEventListener("click", function () {
 // ============================================
 
 function completeMission() {
+    if (player.completedHabits.includes(currentMission.id)) return;
 
-    player.xp += currentMission.reward.xp;
+    const rewardXP = Number(currentMission.reward.xp) || 0;
+    player.xp += rewardXP;
+    sendProgress(
+        currentMission.title,
+        "XP_RECOMPENSA_MISION",
+        false,
+        rewardXP
+    );
 
     player.completedHabits.push(currentMission.id);
 
@@ -805,7 +812,15 @@ function renderMemorama() {
         const isVisible =
             card.matched || flippedCards.includes(index);
 
-        cardElement.textContent = isVisible ? card.text : "❓";
+        if (isVisible) {
+            cardElement.classList.add("is-flipped");
+        }
+
+        cardElement.textContent = isVisible ? card.text : "?";
+        cardElement.setAttribute(
+            "aria-label",
+            isVisible ? card.text : "Carta oculta"
+        );
 
         cardElement.addEventListener("click", function () {
 
@@ -906,6 +921,8 @@ function finishMemorama() {
 
     player.xp += bonusXP;
 
+    sendProgress("Memorama de los 7 hábitos", "XP_BONUS_MEMORAMA", false, bonusXP);
+
     updateXP();
 
     memoramaXP.textContent = `⭐ +${bonusXP} XP`;
@@ -926,6 +943,8 @@ function finishSopa() {
     const bonusXP = 200;
 
     player.xp += bonusXP;
+
+    sendProgress("Sopa de letras", "XP_BONUS_SOPA", false, bonusXP);
 
     updateXP();
 
@@ -1150,54 +1169,43 @@ function startSopa() {
 // ============================================
 
 function renderSopa() {
-
-    sopaGrid.innerHTML = "";
+    sopaGrid.replaceChildren();
+    sopaGrid.style.gridTemplateColumns =
+        `repeat(${sopaGridSize}, minmax(0, 1fr))`;
 
     for (let row = 0; row < sopaGridSize; row++) {
-
         for (let col = 0; col < sopaGridSize; col++) {
-
             const cellButton = document.createElement("button");
-
-            cellButton.classList.add("sopa-cell");
-
+            cellButton.type = "button";
+            cellButton.className = "sopa-cell";
             cellButton.textContent = sopaGridData[row][col];
+            cellButton.setAttribute("aria-label", `Fila ${row + 1}, columna ${col + 1}: ${sopaGridData[row][col]}`);
 
             const isSelected = sopaSelectedCells.some(function (cell) {
-
                 return cell.row === row && cell.col === col;
-
             });
 
             const foundWord = getFoundWordForCell(row, col);
 
             if (isSelected) {
-
                 cellButton.classList.add("selected");
-
             }
 
             if (foundWord) {
-
                 cellButton.classList.add("found");
-
-                cellButton.style.backgroundColor =
-                    getWordColor(foundWord.id);
-
+                cellButton.style.setProperty(
+                    "--word-color",
+                    getWordColor(foundWord.id)
+                );
             }
 
             cellButton.addEventListener("click", function () {
-
                 handleSopaCellClick(row, col);
-
             });
 
             sopaGrid.appendChild(cellButton);
-
         }
-
     }
-
 }
 
 
@@ -1296,8 +1304,6 @@ function checkSopaSelection() {
     renderSopaWordList();
 
 }
-
-
 // ============================================
 // OBTENER LAS CELDAS ENTRE DOS PUNTOS
 // ============================================
@@ -1338,8 +1344,6 @@ function getLineCells(start, end) {
     return cells;
 
 }
-
-
 // ============================================
 // BUSCAR SI ESA LÍNEA ES UNA PALABRA VÁLIDA
 // ============================================
@@ -1489,8 +1493,6 @@ function getLineCells(start, end) {
     return cells;
 
 }
-
-
 // ============================================
 // BUSCAR SI ESA LÍNEA ES UNA PALABRA VÁLIDA
 // ============================================
@@ -1569,14 +1571,12 @@ backToMapFromSopaButton.addEventListener("click", function () {
 // ============================================
 
 finalButton.addEventListener("click", function () {
-
     mapScreen.classList.add("hidden");
-
     finalScreen.classList.remove("hidden");
 
-    finalSummary.textContent =
-        `${player.name}, completaste las 7 misiones y ganaste ⭐ ${player.xp} XP en total.`;
-
+    document.getElementById("finalPlayerName").textContent = player.name;
+    document.getElementById("finalXP").textContent = `${player.xp} XP`;
+     `${player.name}, completaste las 7 misiones y ganaste ${player.xp} XP en total.`;
 });
 
 
@@ -1722,7 +1722,6 @@ function getWordColor(wordId) {
     return sopaColors[wordId - 1];
 
 }
-
 // ============================================
 // SABER QUÉ PALABRA ENCONTRADA OCUPA UNA CELDA
 // ============================================

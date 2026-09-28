@@ -4,9 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Panel del Profe — Misión Efectividad</title>
-</head>
-
     <style>
+        :root {
+            --ink: #202333;
+            --indigo: #303b5d;
+            --blue: #53658f;
+            --warm: #b17b59;
+            --line: #e3e5ec;
+        }
 
         * {
             margin: 0;
@@ -15,89 +20,252 @@
         }
 
         body {
+            min-height: 100vh;
+            padding: 48px 24px;
+            color: var(--ink);
             font-family: Arial, sans-serif;
-            padding: 30px;
+            background:
+                radial-gradient(ellipse at 8% 12%, rgb(210 220 242 / 65%), transparent 36%),
+                radial-gradient(ellipse at 92% 86%, rgb(244 222 199 / 58%), transparent 36%),
+                #f5f6fa;
         }
-
-        h1 {
-            font-size: 32px;
-            margin-bottom: 20px;
-        }
-
-        /* PANTALLA DE CONTRASEÑA */
 
         #passwordScreen {
-            max-width: 400px;
-            margin: 100px auto;
+            width: min(100%, 440px);
+            margin: max(48px, 12vh) auto;
+            padding: 42px;
+            overflow: hidden;
+            border: 1px solid rgb(72 88 128 / 12%);
+            border-radius: 22px;
+            background: rgb(255 255 255 / 90%);
+            box-shadow: 0 24px 70px rgb(48 59 93 / 13%);
             text-align: center;
+            animation: panel-enter 650ms cubic-bezier(.2, .75, .25, 1) both;
+        }
+
+        #passwordScreen::before {
+            display: block;
+            width: 54px;
+            height: 4px;
+            margin: 0 auto 24px;
+            border-radius: 9px;
+            background: linear-gradient(90deg, var(--blue), var(--warm));
+            content: "";
+        }
+
+        #passwordScreen h1 {
+            margin-bottom: 26px;
+            color: var(--ink);
+            font-size: 32px;
+            line-height: 1.15;
         }
 
         #passwordInput {
             width: 100%;
-            padding: 14px;
-            border: 2px solid #000000;
+            min-height: 52px;
+            margin-bottom: 14px;
+            padding: 0 15px;
+            border: 1px solid #d9dce6;
+            border-radius: 11px;
+            background: #fff;
+            color: var(--ink);
+            font: inherit;
+            transition: border-color 160ms ease, box-shadow 160ms ease;
+        }
+
+        #passwordInput:focus {
+            border-color: #6678a6;
+            outline: none;
+            box-shadow: 0 0 0 4px rgb(102 120 166 / 15%);
+        }
+
+        #passwordButton,
+        #refreshButton {
+            min-height: 48px;
+            padding: 0 20px;
+            border: 0;
             border-radius: 12px;
-            font-size: 16px;
-            margin: 15px 0;
+            background: linear-gradient(110deg, #7182ad, var(--indigo));
+            box-shadow: 0 10px 24px rgb(48 59 93 / 20%);
+            color: #fff;
+            font: inherit;
+            font-weight: 700;
+            cursor: pointer;
+            transition: transform 180ms ease, filter 180ms ease, box-shadow 180ms ease;
         }
 
         #passwordButton {
             width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 12px;
-            background: #000000;
-            color: #ffffff;
-            font-weight: bold;
-            cursor: pointer;
+        }
+
+        #passwordButton:hover,
+        #refreshButton:hover {
+            transform: translateY(-2px);
+            filter: brightness(1.08);
+            box-shadow: 0 14px 28px rgb(48 59 93 / 26%);
+        }
+
+        #passwordButton:focus-visible,
+        #refreshButton:focus-visible {
+            outline: 3px solid var(--warm);
+            outline-offset: 3px;
         }
 
         #passwordError {
-            color: #e63946;
-            font-weight: bold;
-            margin-top: 10px;
+            margin-top: 14px;
+            color: #a33e50;
+            font-weight: 700;
         }
 
-        /* DASHBOARD */
+        #dashboardScreen {
+            animation: panel-enter 650ms cubic-bezier(.2, .75, .25, 1) both;
+        }
+
+        .dashboard-header,
+        #groupsContainer,
+        #loadingText {
+            width: min(100%, 1080px);
+            margin-right: auto;
+            margin-left: auto;
+        }
+
+        .dashboard-header {
+            display: grid;
+            grid-template-columns: minmax(0, 1fr) auto;
+            align-items: center;
+            gap: 10px 24px;
+            margin-bottom: 24px;
+            padding: 30px 34px;
+            border: 1px solid rgb(255 255 255 / 55%);
+            border-radius: 20px;
+            background: linear-gradient(115deg, var(--indigo), var(--blue) 68%, #786d96);
+            box-shadow: 0 18px 42px rgb(48 59 93 / 18%);
+            color: #fff;
+        }
+
+        .eyebrow {
+            grid-column: 1 / -1;
+            color: #e3d8d0;
+            font-size: 12px;
+            font-weight: 800;
+            letter-spacing: .18em;
+        }
+
+        .dashboard-header h1 {
+            font-size: 32px;
+            line-height: 1.2;
+        }
+
+        #refreshButton {
+            white-space: nowrap;
+            background: #fff;
+            box-shadow: none;
+            color: var(--indigo);
+        }
+
+        #loadingText {
+            margin-bottom: 18px;
+            color: var(--blue);
+            font-weight: 700;
+        }
+
+        #groupsContainer {
+            display: grid;
+            gap: 18px;
+        }
+
+        .group-card {
+            min-width: 0;
+            overflow-x: auto;
+            padding: 24px 28px;
+            border: 1px solid rgb(72 88 128 / 12%);
+            border-radius: 16px;
+            background: rgb(255 255 255 / 92%);
+            box-shadow: 0 12px 30px rgb(48 59 93 / 8%);
+            animation: panel-enter 550ms ease-out both;
+        }
+
+        .group-card:nth-child(2) { animation-delay: 70ms; }
+        .group-card:nth-child(3) { animation-delay: 140ms; }
+        .group-card:nth-child(4) { animation-delay: 210ms; }
+
+        .group-card h2 {
+            margin-bottom: 16px;
+            color: var(--indigo);
+            font-size: 22px;
+        }
 
         table {
             width: 100%;
+            min-width: 580px;
             border-collapse: collapse;
-            margin-bottom: 30px;
         }
 
-        th, td {
+        th,
+        td {
+            padding: 13px 12px;
+            border-bottom: 1px solid #eceef3;
             text-align: left;
-            padding: 10px 8px;
-            border-bottom: 2px solid #eeeeee;
         }
 
         th {
-            font-size: 13px;
-            letter-spacing: 1px;
-            opacity: 0.6;
+            color: #73798b;
+            font-size: 11px;
+            letter-spacing: .12em;
+            text-transform: uppercase;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: 0;
+        }
+
+        tbody tr:hover {
+            background: #f8f8fb;
         }
 
         .badge {
-            padding: 4px 10px;
-            border-radius: 20px;
-            font-weight: bold;
+            display: inline-block;
+            padding: 5px 10px;
+            border-radius: 999px;
             font-size: 13px;
+            font-weight: 700;
+            white-space: nowrap;
         }
 
-        .badge-good {
-            background: #d8f3dc;
+        .badge-good { background: #dcefe5; color: #286447; }
+        .badge-mid { background: #f7edcf; color: #785b18; }
+        .badge-low { background: #f5dfe2; color: #8b3b49; }
+
+        @keyframes panel-enter {
+            from { opacity: 0; transform: translateY(14px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        .badge-mid {
-            background: #fff3cd;
+        @media (max-width: 640px) {
+            body { padding: 24px 16px; }
+            #passwordScreen { margin: 10vh auto; padding: 32px 24px; }
+            #passwordScreen h1 { font-size: 27px; }
+            .dashboard-header {
+                grid-template-columns: 1fr;
+                padding: 25px 22px;
+            }
+            .dashboard-header h1 { font-size: 26px; }
+            #refreshButton { justify-self: start; }
+            .group-card { padding: 20px 16px; }
         }
 
-        .badge-low {
-            background: #f8d7da;
+        @media (prefers-reduced-motion: reduce) {
+            *,
+            *::before,
+            *::after {
+                animation-duration: .01ms !important;
+                animation-iteration-count: 1 !important;
+                scroll-behavior: auto !important;
+                transition-duration: .01ms !important;
+            }
         }
-
     </style>
+</head>
 
 <body>
 
@@ -130,16 +298,23 @@
     <!-- DASHBOARD (empieza escondido) -->
     <!-- ============================= -->
 
-        <main id="dashboardScreen" style="display: none;">
+          <main id="dashboardScreen" style="display: none;">
 
-        <h1>📊 Progreso de los estudiantes</h1>
+        <div class="dashboard-header">
+
+            <p class="eyebrow">✦ CENTRO DE CONTROL ✦</p>
+
+            <h1>📊 Progreso de los estudiantes</h1>
+
+            <button id="refreshButton">🔄 Actualizar datos</button>
+
+        </div>
 
         <p id="loadingText">Cargando datos...</p>
 
         <div id="groupsContainer"></div>
 
     </main>
-
 
     <script>
 
@@ -162,6 +337,7 @@
         const passwordError = document.getElementById("passwordError");
 
         const dashboardScreen = document.getElementById("dashboardScreen");
+        const refreshButton = document.getElementById("refreshButton");
 
 
         // ============================================
@@ -186,6 +362,7 @@
         }
 
         passwordButton.addEventListener("click", checkPassword);
+        refreshButton.addEventListener("click", loadDashboard);
 
         passwordInput.addEventListener("keyup", function (event) {
 
@@ -201,6 +378,9 @@
         // ============================================
 
                 function loadDashboard() {
+
+            loadingText.textContent = "Cargando datos...";
+            loadingText.style.display = "block";
 
             fetch(SCRIPT_URL)
                 .then(function (response) {
@@ -220,6 +400,7 @@
                 .catch(function (error) {
 
                     console.error("Error cargando datos:", error);
+                    loadingText.textContent = "No se pudieron cargar los datos. Intenta actualizar de nuevo.";
 
                 });
 
@@ -270,16 +451,25 @@
 
                 // Ahora sumamos los datos de este registro a su estudiante
                 const estudiante = grupos[nombreGrupo][nombreEstudiante];
+                const esPremioXP = [
+                    "XP_RECOMPENSA_MISION",
+                    "XP_BONUS_MEMORAMA",
+                    "XP_BONUS_SOPA"
+                ].includes(registro.opcion);
 
-                estudiante.respuestas++;
+                if (!esPremioXP) {
+                    estudiante.respuestas++;
 
-                if (esCorrecta(registro.correcta)) {
-                    estudiante.correctas++;
+                    if (esCorrecta(registro.correcta)) {
+                        estudiante.correctas++;
+                    }
                 }
 
                 estudiante.xpTotal += Number(registro.xp) || 0;
 
-                estudiante.misiones.add(registro.mision);
+                if (registro.opcion !== "XP_BONUS_MEMORAMA" && registro.opcion !== "XP_BONUS_SOPA") {
+                    estudiante.misiones.add(registro.mision);
+                }
 
             });
 
@@ -320,15 +510,16 @@
 
                 const estudiantes = grupos[nombreGrupo];
 
-                // Creamos un título para el grupo
+                // Creamos la tarjeta contenedora de este grupo
+                const groupCard = document.createElement("div");
+                groupCard.classList.add("group-card");
+
                 const tituloGrupo = document.createElement("h2");
                 tituloGrupo.textContent = "Grupo: " + nombreGrupo;
-                groupsContainer.appendChild(tituloGrupo);
+                groupCard.appendChild(tituloGrupo);
 
                 // Creamos la tabla para ese grupo
                 const table = document.createElement("table");
-                table.style.width = "100%";
-                table.style.marginBottom = "30px";
 
                 // Encabezados de la tabla
                 table.innerHTML = `
@@ -370,7 +561,8 @@
 
                 });
 
-                groupsContainer.appendChild(table);
+                groupCard.appendChild(table);
+                groupsContainer.appendChild(groupCard);
 
             });
 
